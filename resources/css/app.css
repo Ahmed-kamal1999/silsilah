@@ -1,0 +1,150 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --color-navy-950: #0a1640;
+    --color-navy-900: #0d1a4a;
+    --color-navy-800: #122a6e;
+    --color-gold-300: #f4d58d;
+    --color-gold-500: #e9c46a;
+    --color-gold-700: #b8913f;
+    --color-ink-50: #f5f1e6;
+    --color-ink-400: #9aa6c9;
+
+    --font-arabic: 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+    --font-latin: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    --animate-marquee: marquee 45s linear infinite;
+    --animate-float: float 7s ease-in-out infinite;
+
+    @keyframes marquee {
+        to { transform: translateX(var(--marquee-to, -50%)); }
+    }
+    @keyframes float {
+        50% { transform: translateY(-10px); }
+    }
+}
+
+@layer base {
+    html { scroll-behavior: smooth; }
+    html[lang='ar'] body { font-family: var(--font-arabic); }
+    html[lang='en'] body { font-family: var(--font-latin); }
+    body {
+        background: var(--color-navy-950);
+        color: var(--color-ink-50);
+        -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, h4 {
+        color: var(--color-gold-500);
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgb(0 0 0 / 0.35);
+    }
+    html[lang='ar'] h1, html[lang='ar'] h2, html[lang='ar'] h3 { line-height: 1.35; }
+    :focus-visible { outline: 2px solid var(--color-gold-300); outline-offset: 3px; }
+}
+
+@layer components {
+    /* Navy gradient + 45° pinstripe overlay, pure CSS */
+    .bg-pinstripe {
+        background:
+            repeating-linear-gradient(45deg, rgb(233 196 106 / 0.06) 0 1px, transparent 1px 14px),
+            linear-gradient(160deg, #0a1640 0%, #122a6e 100%);
+    }
+
+    .container-x { width: 100%; max-width: 76rem; margin-inline: auto; padding-inline: 1.25rem; }
+    .section { padding-block: 4.5rem; }
+    @media (min-width: 1024px) { .section { padding-block: 6rem; } }
+
+    .eyebrow {
+        font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase;
+        color: var(--color-gold-700); font-weight: 600;
+    }
+    html[lang='ar'] .eyebrow { letter-spacing: 0; font-size: 0.95rem; }
+
+    .card-gold {
+        background: var(--color-navy-900);
+        border: 1px solid rgb(184 145 63 / 0.4);
+        border-radius: 1rem;
+        transition: border-color .25s, transform .25s, box-shadow .25s;
+    }
+    .card-gold:hover, .card-gold:focus-within {
+        border-color: var(--color-gold-500);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px -12px rgb(0 0 0 / 0.6);
+    }
+    .frame-gold { border: 1px solid var(--color-gold-700); border-radius: 1.25rem; }
+
+    .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+        padding: .75rem 1.6rem; border-radius: .6rem; font-weight: 700; cursor: pointer;
+        transition: background .2s, color .2s, transform .2s, border-color .2s;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--color-gold-500); color: var(--color-navy-950); }
+    .btn-primary:hover { background: var(--color-gold-300); }
+    .btn-outline { border: 1.5px solid var(--color-gold-500); color: var(--color-gold-500); }
+    .btn-outline:hover { background: rgb(233 196 106 / .12); border-color: var(--color-gold-300); color: var(--color-gold-300); }
+
+    .field {
+        width: 100%; background: rgb(10 22 64 / .7); color: var(--color-ink-50);
+        border: 1px solid rgb(184 145 63 / .45); border-radius: .6rem; padding: .75rem 1rem;
+    }
+    .field::placeholder { color: var(--color-ink-400); }
+    .field:focus { border-color: var(--color-gold-500); outline: none; box-shadow: 0 0 0 3px rgb(233 196 106 / .18); }
+    .field[aria-invalid='true'] { border-color: #f08a8a; }
+
+    .prose-silsilah { line-height: 1.95; color: var(--color-ink-50); }
+    .prose-silsilah h2, .prose-silsilah h3 { margin-block: 1.6em .6em; }
+    .prose-silsilah p, .prose-silsilah ul, .prose-silsilah ol { margin-block: 1em; }
+    .prose-silsilah ul { list-style: disc; padding-inline-start: 1.4rem; }
+    .prose-silsilah ol { list-style: decimal; padding-inline-start: 1.4rem; }
+    .prose-silsilah a { color: var(--color-gold-300); text-decoration: underline; }
+
+    /* Marquee: direction follows the document direction */
+    .marquee { overflow: hidden; --marquee-to: -50%;
+        mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+    [dir='rtl'] .marquee { --marquee-to: 50%; }
+    .marquee-track { display: flex; width: max-content; animation: var(--animate-marquee); }
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+    .logo-chip img { filter: grayscale(1) opacity(.7); transition: filter .25s; }
+    .logo-chip:hover img { filter: none; }
+
+    /* Scroll reveal */
+    [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+    [data-reveal='start'] { transform: translateX(-24px); }
+    [data-reveal='end'] { transform: translateX(24px); }
+    [dir='rtl'] [data-reveal='start'] { transform: translateX(24px); }
+    [dir='rtl'] [data-reveal='end'] { transform: translateX(-24px); }
+    [data-reveal].is-visible { opacity: 1; transform: none; }
+}
+
+/* Light theme: remap the palette variables; utilities pick them up automatically */
+html[data-theme='light'] {
+    --color-navy-950: #f7f4ec;
+    --color-navy-900: #ffffff;
+    --color-navy-800: #e9edf7;
+    --color-gold-300: #8a6414;
+    --color-gold-500: #7a5a12;
+    --color-gold-700: #b8913f;
+    --color-ink-50: #0d1a4a;
+    --color-ink-400: #4b5578;
+}
+html[data-theme='light'] .bg-pinstripe {
+    background:
+        repeating-linear-gradient(45deg, rgb(184 145 63 / 0.07) 0 1px, transparent 1px 14px),
+        linear-gradient(160deg, #f7f4ec 0%, #e9edf7 100%);
+}
+html[data-theme='light'] h1, html[data-theme='light'] h2, html[data-theme='light'] h3, html[data-theme='light'] h4 { text-shadow: none; }
+html[data-theme='light'] .btn-primary { background: #0d1a4a; color: #f7f4ec; }
+html[data-theme='light'] .btn-primary:hover { background: #122a6e; }
+html[data-theme='light'] .field { background: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    [data-reveal] { opacity: 1; transform: none; transition: none; }
+    .marquee-track, .animate-float { animation: none !important; }
+    .marquee { overflow-x: auto; }
+    .card-gold, .btn { transition: none; }
+}
