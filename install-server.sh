@@ -5,7 +5,8 @@
 set -e
 
 REPO_URL="${1:?Usage: ./install-server.sh <git repo url>}"
-DOMAIN="${2:-_}"
+DOMAIN="${2:-slislatech.sa}"
+SERVER_NAMES="$DOMAIN www.$DOMAIN"; [ "$DOMAIN" = "_" ] && SERVER_NAMES="_"
 APP_DIR="${3:-$HOME/silsilah}"
 
 if ! command -v docker >/dev/null 2>&1; then
@@ -37,7 +38,7 @@ sudo apt-get update && sudo apt-get install -y nginx
 sudo tee /etc/nginx/sites-available/silsilah >/dev/null <<NGINX
 server {
     listen 80;
-    server_name $DOMAIN;
+    server_name $SERVER_NAMES;
     client_max_body_size 64M;
 
     location / {
@@ -61,5 +62,5 @@ sudo nginx -t && sudo systemctl enable --now nginx && sudo systemctl reload ngin
 echo
 echo "App:        http://$HOST"
 echo "phpMyAdmin: ssh -L 8080:127.0.0.1:8080 user@$SERVER_IP, then http://localhost:8080"
-echo "HTTPS:      sudo apt install -y certbot python3-certbot-nginx && sudo certbot --nginx -d $DOMAIN"
+echo "HTTPS:      sudo apt install -y certbot python3-certbot-nginx && sudo certbot --nginx -d $DOMAIN -d www.$DOMAIN"
 echo "First start takes a few minutes (composer + npm install). Watch: sudo docker compose logs -f app"
